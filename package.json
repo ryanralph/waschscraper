@@ -1,0 +1,20 @@
+{
+  "name": "waschscraper",
+  "version": "0.0.1",
+  "description": "Simple tool to grab info about the washing machine's in Max Kade Dorm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scrape"
+  ],
+  "author": "Ryan Ralph",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.17.0",
+    "express": "^4.9.0",
+    "request": "^2.42.0",
+    "timer-jobs": "^0.1.0"
+  }
+}

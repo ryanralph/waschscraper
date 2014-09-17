@@ -1,0 +1,5 @@
+Simple tool to log the data of when the washing machines are in use at my student dorm. 
+
+Eventually I want to make a notifier of when they are free and turn it into a chrome extension.
+
+For now all this does is log when the washing machines are in use to a .csv file that I might graph at some point
