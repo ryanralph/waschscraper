@@ -6,6 +6,9 @@ var app     = express();
 
 console.log('started');
 var timerDuration = 1 * 60 * 1000; //(minutes * 60 * 1000)
+var timeCorrectionFactor = -8;
+var json = {};
+var csv = "";
 setInterval(function() {
 	url = 'http://lions.kade.stw.uni-erlangen.de/plugins/wash/wash.php';
 
@@ -15,7 +18,6 @@ setInterval(function() {
 
 			var mode = [];
 			var remainingTime = [];
-			var json = {};
 
 			$('font strong').filter(function(){
 		        var data = $(this);
@@ -31,29 +33,36 @@ setInterval(function() {
 		}
 		json = { machine1: {name: mode[0],
 	  							  mode: mode[3],
-								  timeRemaining: mode[0]
+								  timeRemaining: remainingTime[9]
 								 },
 					machine2: {name: mode[1],
 								  mode: mode[4],
-								  timeRemaining: mode[0]
+								  timeRemaining: remainingTime[10]
 								 },
 					machine3: {name: mode[2],
-								  mode: mode[5]},
-								  timeRemaining: mode[0]
+								  mode: mode[5],
+								  timeRemaining: remainingTime[11]
+								 }
 		};
 		var currentTime = new Date();
 		var timestamp = new Date();
-		timestamp.setHours(currentTime.getHours() - 8); //Time correction, computer time is +10, time I'm interested in is +2 therefore 8 hours correction
-		var csv = timestamp + "," + mode[3] + "," + mode[4] + "," + mode[5] + '\n';
-        // To write to the system we will use the built in 'fs' library.
-        // In this example we will pass 3 parameters to the writeFile function
-        // Parameter 1 :  output.json - this is what the created filename will be called
-        // Parameter 2 :  JSON.stringify(json, null, 4) - the data to write, here we do an extra step by calling JSON.stringify to make our JSON easier to read
-        // Parameter 3 :  callback function - a callback function to let us know the status of our function
-		  fs.appendFile('output.csv', csv, function(err) {
-		  		console.log('written data for ' + timestamp);
-		  });
+		timestamp.setHours(currentTime.getHours() + timeCorrectionFactor); //Time correction, computer time is +10, time I'm interested in is +2 therefore 8 hours correction
+		csv = timestamp + "," + mode[3] + "," + mode[4] + "," + mode[5] + '\n';
+		fs.appendFile('output.csv', csv, function(err) {
+			console.log('written data for ' + timestamp);
+		});
 	})
 }, timerDuration);
+
+
+app.get('/csv', function(req, res){
+	res.send(csv);
+});
+
+app.get('/json', function(req, res){
+	res.send(json);
+});
+
+app.listen('8081');
 
 exports = module.exports = app;
