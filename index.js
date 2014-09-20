@@ -4,11 +4,12 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app     = express();
 
-console.log('started');
+var port = 8000;
 var timerDuration = 1 * 60 * 1000; //(minutes * 60 * 1000)
 var timeCorrectionFactor = -8;
 var json = {};
 var csv = "";
+console.log('Server started on Port ' + port);
 setInterval(function() {
 	url = 'http://lions.kade.stw.uni-erlangen.de/plugins/wash/wash.php';
 
@@ -54,15 +55,24 @@ setInterval(function() {
 	})
 }, timerDuration);
 
-
 app.get('/csv', function(req, res){
 	res.send(csv);
+});
+
+app.get('/csv/all', function(req, res) {
+	fs.readFile('output.csv', 'utf8', function (err,data) {
+		if (err) {
+			res.send(err);
+		} else {
+			res.send(data);
+		}
+	});
 });
 
 app.get('/json', function(req, res){
 	res.send(json);
 });
 
-app.listen('8081');
+app.listen(port);
 
 exports = module.exports = app;
